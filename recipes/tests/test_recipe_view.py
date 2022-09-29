@@ -25,7 +25,7 @@ class RecipeViewTest(RecipeBaseTest):
         self.assertIn('<h1>No recipes found here 🥲</h1>',
                       response.content.decode('utf-8'))
 
-    @skip('WIP')
+# @skip"WIP" significa "WORK IN PROGRESS"
     def test_if_home_template_loads_recipes(self):
         self.make_recipe(preparation_time=5)
         response = self.client.get(reverse('recipes:home'))
@@ -35,6 +35,18 @@ class RecipeViewTest(RecipeBaseTest):
         self.assertIn('Recipe Title', response_content_recipe)
         self.assertIn('5 Minutos', response_content_recipe)
         self.assertIn('5 Porções', response_content_recipe)
+
+    def test_if_category_template_loads_recipes(self):
+        required_title = 'This title is for a template test'
+        self.make_recipe(title=required_title)
+        response = self.client.get(
+            reverse(
+                'recipes:category', kwargs={'category_id': 1}
+            )
+        )
+        response_content_recipe = response.content.decode('utf-8')
+
+        self.assertIn(required_title, response_content_recipe)
 
     def test_if_category_view_is_correct(self):
         view = resolve(
@@ -59,3 +71,15 @@ class RecipeViewTest(RecipeBaseTest):
             reverse('recipes:recipe', kwargs={'id': 1000})
         )
         self.assertEqual(response.status_code, 404)
+
+    def test_if_recipe_template_loads_recipes(self):
+        required_title = 'This title is for a template test'
+        self.make_recipe(title=required_title)
+        response = self.client.get(
+            reverse(
+                'recipes:recipe', kwargs={'id': 1}
+            )
+        )
+        response_content_recipe = response.content.decode('utf-8')
+
+        self.assertIn(required_title, response_content_recipe)
