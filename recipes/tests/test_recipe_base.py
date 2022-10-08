@@ -3,6 +3,7 @@ from recipes.models import Category, Recipe, User
 
 
 class RecipeBaseTest(TestCase):
+
     def setUp(self) -> None:
         return super().setUp()
 

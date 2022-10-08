@@ -1,5 +1,3 @@
-from unittest import skip
-
 from django.urls import resolve, reverse
 from recipes import views
 
@@ -53,7 +51,10 @@ class RecipeCategoryViewTest(RecipeBaseTest):
         recipe = self.make_recipe(is_published=False)
 
         respose = self.client.get(
-            reverse('recipes:category', kwargs={'category_id': recipe.category.id}))
+            reverse('recipes:category', kwargs={
+                'category_id': recipe.category.id
+            })
+        )
 
         self.assertEqual(respose.status_code, 404)
 
@@ -88,7 +89,7 @@ class RecipeDetailViewTest(RecipeBaseTest):
         recipe = self.make_recipe(is_published=False)
 
         respose = self.client.get(
-            reverse('recipes:recipe', kwargs={'id': recipe.category.id}))
+            reverse('recipes:recipe', kwargs={'id': recipe.id}))
 
         self.assertEqual(respose.status_code, 404)
 
