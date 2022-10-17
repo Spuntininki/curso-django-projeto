@@ -7,6 +7,24 @@ class RecipeBaseTest(TestCase):
     def setUp(self) -> None:
         return super().setUp()
 
+    def make_default_recipe_class(self):
+        recipe = Recipe(
+            category=self.make_category(
+                name='Test if is_html_is_false recipe class'),
+            author=self.make_author(username='New User'),
+            title='Recipe Title',
+            description='Recipe Description',
+            slug='recipe-slug',
+            preparation_time=10,
+            preparation_time_unit='Minutos',
+            servings=5,
+            servings_unit='Porções',
+            preparation_steps='Recipe Preparation Steps',
+        )
+        recipe.full_clean()
+        recipe.save()
+        return recipe
+
     def make_category(self, name='Category'):
         return Category.objects.create(name=name)
 

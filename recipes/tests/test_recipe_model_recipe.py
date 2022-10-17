@@ -26,3 +26,28 @@ class TestRecipeModel(RecipeBaseTest):
         setattr(self.recipe, atribute, 'A' * (max_lenght + 1))
         with self.assertRaises(ValidationError):
             self.recipe.full_clean()
+
+    def test_if_recipe_preparation_steps_is_html_is_false_by_default(self):
+        recipe = self.make_default_recipe_class()
+        self.assertFalse(
+            recipe.preparation_steps_is_html,
+            msg='failed because preparation_steps_is_html is not False'
+        )
+
+    def test_if_recipe_is_published_is_false_by_default(self):
+        recipe = self.make_default_recipe_class()
+        self.assertFalse(
+            recipe.is_published,
+            msg='failed because is_published is not False'
+        )
+
+    def test_recipe_str_representation(self):
+        needed = 'Recipe Str Representation test'
+        self.recipe.title = needed
+        self.recipe.full_clean()
+        self.recipe.save()
+        self.assertEqual(
+            str(self.recipe),
+            needed,
+            msg='the str represetentation must be the recipe title.'
+        )
