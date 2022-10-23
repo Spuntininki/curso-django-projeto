@@ -14,3 +14,7 @@ class RecipeURLsTest(TestCase):
     def test_if_recipes_detail_url_is_correct(self):
         url_input = reverse('recipes:recipe', kwargs={'id': 1})
         self.assertEqual(url_input, '/recipes/1/')
+
+    def test_if_search_url_is_correct(self):
+        url_input = reverse('recipes:search')
+        self.assertEqual(url_input, '/recipes/search/')
