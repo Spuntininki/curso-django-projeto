@@ -1,4 +1,5 @@
 from django.urls import resolve, reverse
+
 from recipes import views
 
 from .test_recipe_base import RecipeBaseTest
@@ -13,7 +14,7 @@ class RecipeHomeViewTest(RecipeBaseTest):
         response = self.client.get(reverse('recipes:home'))
         self.assertEqual(response.status_code, 200)
 
-    def test_if_recipe_home_loads_correct_template(self):
+    def test_if_recipe_home_loads_the_correct_template(self):
         response = self.client.get(reverse('recipes:home'))
         self.assertTemplateUsed(response, 'recipes/pages/home.html')
 
@@ -116,3 +117,20 @@ class RecipeDetailViewTest(RecipeBaseTest):
         response_content_recipe = response.content.decode('utf-8')
 
         self.assertIn(required_title, response_content_recipe)
+
+
+class RecipeSearchViewTest(RecipeBaseTest):
+
+    def test_if_search_view_is_correct(self):
+        view = resolve(reverse('recipes:search'))
+        self.assertIs(view.func, views.search)
+
+    def test_if_recipe_search_loads_the_correct_template(self):
+        url = reverse('recipes:search') + '?search=Teste'
+        response = self.client.get(url)
+        self.assertTemplateUsed(response, 'recipes/pages/search.html')
+
+    def test_if_recipe_search_raises_404_if_no_input(self):
+        url = reverse('recipes:search')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404)
