@@ -134,3 +134,11 @@ class RecipeSearchViewTest(RecipeBaseTest):
         url = reverse('recipes:search')
         response = self.client.get(url)
         self.assertEqual(response.status_code, 404)
+
+    def test_if_search_term_is_on_page_if_not_found(self):
+        url = reverse('recipes:search') + '?search=test'
+        response = self.client.get(url)
+        self.assertIn(
+            '<h1>"test" was not Found here </h1>',
+            response.content.decode('utf-8')
+        )
