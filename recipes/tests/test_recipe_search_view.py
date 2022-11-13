@@ -22,9 +22,46 @@ class RecipeSearchViewTest(RecipeBaseTest):
         self.assertEqual(response.status_code, 404)
 
     def test_if_search_term_is_on_page_if_not_found(self):
-        url = reverse('recipes:search') + '?search=test'
+
         response = self.client.get(url)
         self.assertIn(
             '<h1>"test" was not Found here </h1>',
             response.content.decode('utf-8')
         )
+
+    def test_if_search_query_is_working_propely_with_title_parameter(self):
+        title1 = 'This is recipe one'
+        title2 = 'This is recipe two'
+
+        recipe1 = RecipeBaseTest.make_recipe(
+            self,
+            slug='one',
+            title=title1,
+            author_data={'username': 'user_one'}
+        )
+        recipe2 = RecipeBaseTest.make_recipe(
+            self,
+            slug='two',
+            title=title2,
+            author_data={'username': 'user_two'}
+        )
+        response1 = self.client.get(
+            reverse('recipes:search') + f'?search={title1}'
+        )
+        response2 = self.client.get(
+            reverse('recipes:search') + f'?search={title2}'
+        )
+        response_both = self.client.get(
+            reverse('recipes:search') + '?search=this is'
+        )
+
+        self.assertIn(recipe1, response1.context['recipes'])
+        self.assertNotIn(recipe2, response1.context['recipes'])
+
+        self.assertIn(recipe2, response2.context['recipes'])
+        self.assertNotIn(recipe1, response2.context['recipes'])
+
+        self.assertIn(recipe1, response_both.context['recipes'])
+        self.assertIn(recipe2, response_both.context['recipes'])
+
+    # pendente criar um teste usando quando a pesquisa usa a "description" como parametro.
