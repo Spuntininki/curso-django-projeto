@@ -29,7 +29,7 @@ class RecipeSearchViewTest(RecipeBaseTest):
             response.content.decode('utf-8')
         )
 
-    def test_if_search_query_is_working_propely_with_title_parameter(self):
+    def test_if_search_query_is_working_propely_with_title_as_param(self):
         title1 = 'This is recipe one'
         title2 = 'This is recipe two'
 
@@ -64,4 +64,41 @@ class RecipeSearchViewTest(RecipeBaseTest):
         self.assertIn(recipe1, response_both.context['recipes'])
         self.assertIn(recipe2, response_both.context['recipes'])
 
-    # pendente criar um teste usando quando a pesquisa usa a "description" como parametro.
+    def test_if_search_query_is_working_propely_with_description_as_param(self):
+        title1 = 'This is recipe one'
+        title2 = 'This is recipe two'
+        description_1 = 'Essa aqui é a primeira receita'
+        description_2 = 'Essa aqui é a segunda receita'
+
+        recipe1 = RecipeBaseTest.make_recipe(
+            self,
+            slug='one',
+            title=title1,
+            description=description_1,
+            author_data={'username': 'user_one'}
+        )
+        recipe2 = RecipeBaseTest.make_recipe(
+            self,
+            slug='two',
+            title=title2,
+            description=description_2,
+            author_data={'username': 'user_two'}
+        )
+        response1 = self.client.get(
+            reverse('recipes:search') + f'?search={description_1}'
+        )
+        response2 = self.client.get(
+            reverse('recipes:search') + f'?search={description_2}'
+        )
+        response_both = self.client.get(
+            reverse('recipes:search') + '?search=Essa aqui é a'
+        )
+
+        self.assertIn(recipe1, response1.context['recipes'])
+        self.assertNotIn(recipe2, response1.context['recipes'])
+
+        self.assertIn(recipe2, response2.context['recipes'])
+        self.assertNotIn(recipe1, response2.context['recipes'])
+
+        self.assertIn(recipe1, response_both.context['recipes'])
+        self.assertIn(recipe2, response_both.context['recipes'])
